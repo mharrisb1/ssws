@@ -1,6 +1,5 @@
 #include <arpa/inet.h>
 #include <errno.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -9,16 +8,9 @@
 #include "config.h"
 #include "log.h"
 #include "server.h"
+#include "sig.h"
 
 #define BUFSIZE 1024
-
-void sigchld_handler(int) {
-  int saved_errno = errno;
-  while (waitpid(-1, NULL, WNOHANG) > 0) {
-    // Child process reaped
-  }
-  errno = saved_errno;
-}
 
 void *get_in_addr(struct sockaddr *sa) {
   if (sa->sa_family == AF_INET) {
@@ -30,7 +22,6 @@ void *get_in_addr(struct sockaddr *sa) {
 int main(int argc, char **argv) {
   int                     new_fd;
   socklen_t               sin_size;
-  struct sigaction        sa;
   struct sockaddr_storage their_addr;
 
   char dst[INET6_ADDRSTRLEN];
@@ -47,14 +38,7 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  sa.sa_handler = sigchld_handler;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = SA_RESTART;
-  if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-    error("sigaction (%s)", strerror(errno));
-    close(sockfd);
-    exit(EXIT_FAILURE);
-  }
+  setup_sighandler();
 
   info("🍦 ssws started");
   info("Address:\thttp://%s:%s", config->host, config->port);
