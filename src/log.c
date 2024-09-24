@@ -16,7 +16,7 @@
 static char *LEVEL_NAME[]  = {"TRACE", "DEBUG", "INFO ", "WARN ", "ERROR"};
 static char *LEVEL_COLOR[] = {CYAN, BLUE, GREEN, YELLOW, RED};
 
-LogLevel current_log_level = TRACE;
+LogLevel current_log_level = INFO;
 
 void log_message(const LogLevel log_level, const char *format, ...) {
   if (log_level < current_log_level) {
