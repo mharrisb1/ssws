@@ -1,5 +1,8 @@
 # 🍦 ssws - Super simple web server
 
+> [!CAUTION]
+> Under development as pre-alpha (currently not working)
+
 A minimal static file server.
 
 ## Usage
