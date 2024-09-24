@@ -5,6 +5,8 @@
 
 #include "config.h"
 
-int new_server_socket(Config *config);
+int setup_server_socket(Config *config);
+
+void handle_client(int client_fd);
 
 #endif

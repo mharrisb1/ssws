@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "log.h"
-#include "sig_handler.h"
+#include "sig.h"
 
 void sigchld_handler(int n) {
   (void)n;

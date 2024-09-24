@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -7,8 +8,9 @@
 #include "server.h"
 
 #define BACKLOG 10
+#define BUFSIZE 1024
 
-int new_server_socket(Config *config) {
+int setup_server_socket(Config *config) {
   int             status, sockfd = -1;
   struct addrinfo hints, *res, *p;
   const int       yes = 1;
@@ -63,4 +65,30 @@ int new_server_socket(Config *config) {
   }
 
   return sockfd;
+}
+
+void handle_client(int client_fd) {
+  char buf[BUFSIZE];
+  int  nbytes = recv(client_fd, buf, BUFSIZE - 1, 0);
+  if (nbytes == -1) {
+    error("server: recv (%s)", strerror(errno));
+    close(client_fd);
+    exit(EXIT_FAILURE);
+  }
+  buf[nbytes] = '\0';
+
+  debug("server: received request\n%s", buf);
+
+  const char *response = "HTTP/1.1 200 OK\r\n"
+                         "Content-Type: text/plain\r\n"
+                         "Content-Length: 13\r\n"
+                         "\r\n"
+                         "Hello, world!";
+
+  if (send(client_fd, response, strlen(response), 0) == -1) {
+    error("server: send (%s)", strerror(errno));
+  }
+
+  close(client_fd);
+  exit(EXIT_SUCCESS);
 }
