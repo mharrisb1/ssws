@@ -7,6 +7,6 @@
 
 int setup_server_socket(Config *config);
 
-void handle_client(int client_fd);
+void handle_client(int client_fd, Config *config);
 
 #endif

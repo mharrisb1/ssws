@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
     if (!fork()) {
       close(sockfd);
-      handle_client(client_fd);
+      handle_client(client_fd, config);
     }
     close(client_fd);
   }

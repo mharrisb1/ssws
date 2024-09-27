@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -8,7 +9,7 @@
 #include "server.h"
 
 #define BACKLOG 10
-#define BUFSIZE 1024
+#define BUFSIZE 4096
 
 int setup_server_socket(Config *config) {
   int             status, sockfd = -1;
@@ -67,7 +68,7 @@ int setup_server_socket(Config *config) {
   return sockfd;
 }
 
-void handle_client(int client_fd) {
+void handle_client(int client_fd, Config *conf) {
   char buf[BUFSIZE];
   int  nbytes = recv(client_fd, buf, BUFSIZE - 1, 0);
   if (nbytes == -1) {
@@ -79,11 +80,34 @@ void handle_client(int client_fd) {
 
   debug("server: received request\n%s", buf);
 
-  const char *response = "HTTP/1.1 200 OK\r\n"
-                         "Content-Type: text/plain\r\n"
-                         "Content-Length: 13\r\n"
-                         "\r\n"
-                         "Hello, world!";
+  char response[BUFSIZE] = "HTTP/1.1 200 OK\n\n";
+
+  char *method = strtok(buf, " ");
+  if (strcmp(method, "GET") == 0) {
+    char *path       = strtok(NULL, " ");
+    char  fpath[100] = "";
+    strcpy(fpath, conf->dir);
+    strcat(fpath, path);
+    if (strcmp(path, "/") == 0) {
+      strcat(fpath, conf->html_index);
+    }
+
+    FILE *file = fopen(fpath, "rb");
+
+    if (file != NULL) {
+      if (fseek(file, 0, SEEK_END) == 0) {
+        long filesize = ftell(file);
+        rewind(file);
+        char *fbuf = malloc(filesize + 1);
+        fread(fbuf, 1, filesize, file);
+        fbuf[filesize] = '\0';
+        strcat(response, fbuf);
+        free(fbuf);
+      }
+    }
+    fclose(file);
+    info("%s %s", method, path);
+  }
 
   if (send(client_fd, response, strlen(response), 0) == -1) {
     error("server: send (%s)", strerror(errno));
