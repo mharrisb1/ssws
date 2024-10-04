@@ -1,4 +1,5 @@
 -Iinclude
+-Ilib
 -Wall
 -Wextra
 -std=c2x

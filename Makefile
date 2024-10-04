@@ -1,5 +1,5 @@
 CC := cc
-CFLAGS := -Wall -Wextra -std=c2x -Iinclude
+CFLAGS := -Wall -Wextra -std=c2x -Iinclude -Ilib
 SRC_DIR := src
 BUILD_DIR := build
 SRCS := $(wildcard $(SRC_DIR)/*.c)

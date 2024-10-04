@@ -3,9 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <log.h/log.h>
+
 #include "cli.h"
 #include "config.h"
-#include "log.h"
 #include "net.h"
 #include "server.h"
 #include "sig.h"

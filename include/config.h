@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "log.h"
+#include <log.h/log.h>
 
 typedef struct {
   char    *dir;

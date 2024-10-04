@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <log.h/log.h>
+
 #include "cli.h"
 #include "config.h"
-#include "log.h"
 
 #define OPT_INDEX_HTML 1000
 #define OPT_404_HTML   1001
@@ -76,13 +77,13 @@ void cli_parse(int argc, char **argv, Config *config) {
         }
         break;
       case 'v':
-        if (current_log_level > TRACE) {
-          current_log_level--;
+        if (current_log_level > LOG_LEVEL_TRACE) {
+          set_log_level(current_log_level - 1);
         }
         break;
       case 'q':
-        if (current_log_level < ERROR) {
-          current_log_level++;
+        if (current_log_level < LOG_LEVEL_ERROR) {
+          set_log_level(current_log_level + 1);
         }
         break;
       case '?':

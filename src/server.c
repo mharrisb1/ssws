@@ -4,8 +4,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <log.h/log.h>
+
 #include "config.h"
-#include "log.h"
 #include "server.h"
 
 #define BACKLOG 10
@@ -112,6 +113,8 @@ void handle_client(int client_fd, Config *conf) {
   if (send(client_fd, response, strlen(response), 0) == -1) {
     error("server: send (%s)", strerror(errno));
   }
+
+  debug("server: sent response\n%s", response);
 
   close(client_fd);
   exit(EXIT_SUCCESS);

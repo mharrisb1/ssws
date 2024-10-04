@@ -4,7 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "log.h"
+#include <log.h/log.h>
+
 #include "sig.h"
 
 void sigchld_handler(int n) {
