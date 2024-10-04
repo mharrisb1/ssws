@@ -1,0 +1,3 @@
+[submodule "lib/log.h"]
+	path = lib/log.h
+	url = https://github.com/mharrisb1/log.h
