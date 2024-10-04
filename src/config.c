@@ -1,7 +1,5 @@
 #include <stdlib.h>
 
-#include <log.h/log.h>
-
 #include "config.h"
 
 Config *Config_default() {
@@ -12,6 +10,5 @@ Config *Config_default() {
   config->html_index = "index.html";
   config->html_404   = "404.html";
   config->html_50x   = "50x.html";
-  config->log_level  = LOG_LEVEL_INFO;
   return config;
 }
