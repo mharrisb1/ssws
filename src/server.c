@@ -7,10 +7,23 @@
 #include <log.h/log.h>
 
 #include "config.h"
+#include "fs.h"
 #include "server.h"
 
 #define BACKLOG 10
 #define BUFSIZE 4096
+
+static char fallback_404_html[] = "<!DOCTYPE html>\n"
+                                  "<html>\n"
+                                  "<head>\n"
+                                  "  <meta charset=\"utf-8\"/>\n"
+                                  "  <title>Not found</title>\n"
+                                  "</head>\n"
+                                  "<body>\n"
+                                  "  <h1>404</h1>\n"
+                                  "  <p>Not found</p>\n"
+                                  "</body>\n"
+                                  "</html>";
 
 int setup_server_socket(Config *config) {
   int             status, sockfd = -1;
@@ -94,18 +107,23 @@ void handle_client(int client_fd, Config *conf) {
     }
 
     FILE *file = fopen(fpath, "rb");
+    char  temp[BUFSIZE];
 
     if (file != NULL) {
-      if (fseek(file, 0, SEEK_END) == 0) {
-        long filesize = ftell(file);
-        rewind(file);
-        char *fbuf = malloc(filesize + 1);
-        fread(fbuf, 1, filesize, file);
-        fbuf[filesize] = '\0';
-        strcat(response, fbuf);
-        free(fbuf);
+      readlines(file, temp);
+    } else {
+      strcpy(fpath, conf->dir);
+      strcat(fpath, "/");
+      strcat(fpath, conf->html_404);
+      debug("%s", fpath);
+      file = fopen(fpath, "rb");
+      if (file != NULL) {
+        readlines(file, temp);
+      } else {
+        strcpy(temp, fallback_404_html);
       }
     }
+    strcat(response, temp);
     fclose(file);
     info("%s %s", method, path);
   }
