@@ -4,7 +4,7 @@ SRC_DIR := src
 BUILD_DIR := build
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
-TARGET := $(BUILD_DIR)/app
+TARGET := $(BUILD_DIR)/ssws
 
 all: $(TARGET)
 
