@@ -11,7 +11,7 @@
 #include "server.h"
 
 #define BACKLOG 10
-#define BUFSIZE 4096
+#define BUFSIZE 16368
 
 static char fallback_404_html[] = "<!DOCTYPE html>\n"
                                   "<html>\n"
