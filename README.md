@@ -1,7 +1,7 @@
 # 🍦 ssws - Super simple web server
 
 > [!CAUTION]
-> Under development as pre-alpha (currently not working)
+> Under development as pre-alpha
 
 A minimal static file server.
 
